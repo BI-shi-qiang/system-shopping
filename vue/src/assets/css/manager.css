@@ -1,0 +1,92 @@
+.manager-container{
+  background-color: #f8f8f8;
+  min-height: 100vh;
+}
+.manager-header{
+  height:60px;
+  display: flex;
+  align-items: center;
+  background-color: #0066bc;
+  box-shadow: 0 1px 4px rgba(0, 21, 41, 08);
+}
+.manager-header-left{
+  background-color: #0066bc;
+  width: 200px;
+  height: 100%;
+  padding-left: 10px;
+  display: flex;
+  align-items: center;
+}
+.manager-header-left img{
+  width:50px;
+  height:50px;
+  border-radius: 50%;
+}
+.manager-header-left .title{
+  font-weight: bold;
+  font-size: 20px;
+  margin-left: 10px;
+  color: white;
+}
+.manager-header-center{
+  flex:1;
+}
+.manager-main-left {
+    width: 200px;
+    box-shadow: 0 0 6px rgba(0, 21, 41, .33);
+    min-height: calc(100vh - 60px);  /*整个视口减去60px*/
+}
+.manager-main-right {
+    flex: 1;
+    width: 0;
+    background-color: pink;
+    padding: 10px;
+}
+
+
+
+/*element的样式*/
+
+/* 这是顶部头像与面包屑那块*/
+.el-tooltip__trigger{
+  outline: none;
+}
+:deep(.el-breadcrumb__inner){/*面包屑样式*/
+  color:white !important;
+}
+:deep(.el-breadcrumb__separator){
+  color:white !important;
+}
+
+/*这是左边菜单栏那块*/
+.el-menu {
+    width: 200px;
+    height: 100%;
+    background-color: #f4f5ef;
+}
+:deep(.el-sub-menu__title) {
+    color: #ddd !important;
+    height: 50px;
+    line-height: 50px;
+    background-color: #233db0 !important;
+}
+.el-sub-menu__title:hover {
+    color: #35404a;
+}
+.el-menu-item {/*子目录*/
+    color: #fff;
+    height: 50px;
+    line-height: 50px;
+    background-color: #4d73af !important;
+}
+.el-menu--inline .el-menu-item {
+    padding-left: 50px !important;
+}
+.el-menu .is-active {/*子目录激活状态--蓝色*/
+    color: #fff !important;
+    background-color: #1890ff !important;
+}
+.el-menu-item:not(.is-active):hover {/*未激活状态，但是鼠标掠过--蓝色*/
+    color: #fff !important;
+    background-color: #1890ff !important;
+}
