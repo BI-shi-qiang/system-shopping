@@ -23,14 +23,21 @@ request.interceptors.response.use(response => {
     return res
   } 
   if (typeof res === 'string') {
-    res = res ? JSON.parse(res) : res
+    try {
+      // 只有非空字符串才尝试解析，空字符串直接返回
+      res = res ? JSON.parse(res) : res
+    } catch (e) {
+      // 解析失败时提示并抛出错误，避免后续逻辑出错
+      ElMessage.error('接口返回数据格式错误，非合法JSON')
+      return Promise.reject(new Error('JSON 解析失败: ' + res))
+    }
   }
   if (res.code === 401) {
-    router.push({ name: 'login' })
+    router.push("/login")
   }
   return res;
 }, error => {
-  if (error.response.status === 401) {
+  if (error.response.status === 404) {
     ElMessage.error('未找到请求接口')
   }else if (error.response.status === 500) {
     ElMessage.error('服务器错误')

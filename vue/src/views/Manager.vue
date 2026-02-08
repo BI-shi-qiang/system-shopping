@@ -56,8 +56,7 @@ import router from "@/router/index.js"
             <el-icon><Menu /></el-icon>
             <span>用户管理</span>
           </template>
-          <el-menu-item>管理员信息</el-menu-item>
-          <el-menu-item><RouterLink to="/404">学校</RouterLink></el-menu-item>
+          <el-menu-item index="/manager/admin">管理员信息</el-menu-item>
         </el-sub-menu>
       </el-menu>
     </div>

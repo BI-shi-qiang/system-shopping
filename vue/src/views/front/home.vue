@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from 'vue'
-import { test } from '@/api/test'
+import { test } from '@/api/test.js'
 const res = ref(null)
 const testHello = async () => {
   res.value = await test()
