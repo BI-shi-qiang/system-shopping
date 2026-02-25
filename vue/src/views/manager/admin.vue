@@ -1,36 +1,170 @@
 <script setup>
 import { reactive } from 'vue'
 import request from '@/utils/request'
+import { Edit, Delete } from '@element-plus/icons-vue'
 // import { ElMessage } from 'element-plus'
 
 const data = reactive({
   formVisible: false,
-  form: {}
+  form: {},
+  tableData: [],
+  pageNum: 1,
+  pageSize: 5,
+  total: 0,
+  name: null,
+  ids: []
 })
 const handleAdd = () => {
   data.form = {}
   data.formVisible = true
 }
+
+const handleEdit = (row) => {
+  data.form = JSON.parse(JSON.stringify(row))
+  data.formVisible = true
+}
+// 分页查
+const load = () => {
+  request.get('/admin/selectPage', { 
+    params: {
+      pageNum: data.pageNum,
+      pageSize: data.pageSize,
+      name: data.name
+    }
+  }).then(res => {
+    if (res.code === '200') {
+      data.tableData = res.data?.list || []
+      data.total = res.data?.total || 0
+    } else {
+      console.log(res)
+    }
+  })
+}
+
+// 增
 const add = () => {
   request.post('/admin/add', data.form).then(res => {
     if (res.code === '200') {
       ElMessage.success('操作成功')
       data.formVisible = false
+      load()
     } else {
       ElMessage.error(res.msg)
     }
   })
 }
 
-const save = () => {
-  add()
+// 改
+const update = () => {
+  request.put('/admin/update', data.form).then(res => {
+    if (res.code === '200') {
+      ElMessage.success('操作成功')
+      data.formVisible = false
+      load()
+    } else {
+      ElMessage.error(res.msg)
+    }
+  })
 }
+
+// 删
+const del = (id) => {
+  ElMessageBox.confirm('删除后数据无法恢复，您确认删除吗?', '删除确认', { type: 'warning' }).then(res => {
+    request.delete('admin/delete/' + id).then(res => {
+      if (res.code === '200') {
+        ElMessage.success('删除成功')
+        load()
+      } else {
+        ElMessage.error(res.msg)
+      }
+    })
+  }).catch(err => {
+    console.log(err)
+  })
+}
+
+// 批量删除
+const delBatch = () => {
+  if (!data.ids.length) {
+    ElMessage.error('请选择数据')
+    return
+  }
+  ElMessageBox.confirm('删除后数据无法恢复，您确认删除吗?', '删除确认', { type: 'warning' }).then(res => {
+    request.delete('/admin/delete/batch', { data: data.ids}).then(res => {
+      if (res.code === '200') {
+        ElMessage.success('删除成功')
+        load()
+      } else {
+        ElMessage.error(res.msg || '删除失败')
+      }
+    })
+  }).catch(err => {
+    console.log(err)
+  })
+}
+
+const handleSelectionChange = (rows) => {
+  data.ids = rows.map(item => item.id)
+  console.log(data.ids)
+}
+
+const save = () => {
+  data.form.id ? update() : add()
+}
+
+const reset = () => {
+  data.name = null
+  load()
+}
+
+load()
 </script>
 
 <template>
  <div>
-    <div class="card">
+
+    <div class="card" style="margin-bottom: 5px">
+      <el-input v-model="data.name" placeholder="请输入名称查询" style="width:240px; margin-right:10px" prefix-icon="Search"></el-input>
+      <el-button type="info" plain @click="load">查询</el-button>
+      <el-button type="warning" plain @click="reset" style="margin: 0 10px">重置</el-button>
+    </div>
+
+    <!--新增-->
+    <div class="card" style="margin-bottom: 5px">
       <el-button type="primary" plain @click="handleAdd">新增</el-button>
+      <el-button type="danger" plain @click="delBatch">批量删除</el-button>
+    </div>
+
+    <!--表格-->
+    <div class="card" style="margin-bottom: 5px">
+      <el-table stripe :data="data.tableData" @selection-change="handleSelectionChange">
+        <el-table-column type="selection" width="55"></el-table-column>
+        <el-table-column prop="username" label="账号"></el-table-column>
+        <el-table-column prop="avatar" label="头像"></el-table-column>
+        <el-table-column prop="name" label="姓名"></el-table-column>
+        <el-table-column prop="role" label="角色"></el-table-column>
+        <el-table-column prop="phone" label="电话"></el-table-column>
+        <el-table-column prop="email" label="邮箱"></el-table-column>
+        <el-table-column label="操作" width="100" fixed="right">
+          <template #default="scope">
+            <el-button type="primary" circle :icon="Edit" @click="handleEdit(scope.row)"></el-button>
+            <el-button type="danger" circle :icon="Delete" @click="del(scope.row.id)"></el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
+
+    <!--分页组件-->
+    <div class="card" v-if="data.total">
+      <el-pagination 
+        background
+        :page-size="data.pageSize" 
+        v-model:current-page="data.pageNum"
+        layout="prev, pager, next"
+        :total="data.total"
+        @current-change="load"
+        > 
+      </el-pagination>
     </div>
 
     <el-dialog title="管理员信息" v-model="data.formVisible" width="40%" destroy-on-close>

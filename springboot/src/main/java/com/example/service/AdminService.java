@@ -7,8 +7,13 @@ import com.example.common.enums.RoleEnum;
 import com.example.entity.Admin;
 import com.example.exception.CustomException;
 import com.example.mapper.AdminMapper;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import jakarta.annotation.Resource;
+import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class AdminService {
@@ -29,5 +34,25 @@ public class AdminService {
         }
         admin.setRole(RoleEnum.ADMIN.name());
         adminMapper.insert(admin);
+    }
+
+    public PageInfo<Admin> selectPage(Admin admin, Integer pageNum, Integer pageSize) {
+        PageHelper.startPage(pageNum, pageSize);
+        List<Admin> list = adminMapper.selectAll(admin);
+        return PageInfo.of(list);
+    }
+
+    public void updateById(Admin admin) {
+        adminMapper.updateById(admin);
+    }
+
+    public void deleteById(Integer id) {
+        adminMapper.deleteById(id);
+    }
+
+    public void deleteBatch(List<Integer> ids) {
+        for (Integer id : ids) {
+            adminMapper.deleteById(id);
+        }
     }
 }
