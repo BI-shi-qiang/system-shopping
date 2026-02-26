@@ -59,14 +59,16 @@ if (!data.user.id) {
           <el-icon><HomeFilled /></el-icon>
           <span>系统首页</span>
         </el-menu-item>
+        <el-menu-item index="/front/home">
+          <el-icon><HomeFilled /></el-icon>
+          <span>前台首页</span>
+        </el-menu-item>
         <el-sub-menu index="1">
           <template #title>
             <el-icon><Menu /></el-icon>
             <span>信息管理</span>
           </template>
-          <el-menu-item>
-            住址
-          </el-menu-item>
+          <el-menu-item index="/manager/notice">系统公告</el-menu-item>
         </el-sub-menu>
         <el-sub-menu index="2">
           <template #title>

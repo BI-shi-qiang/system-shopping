@@ -1,9 +1,12 @@
 <script setup>
 import router from '@/router';
 import { reactive } from "vue";
+import request from '@/utils/request'
 
 const data = reactive({
-  user: JSON.parse(localStorage.getItem('xm-user') || '{}')
+  user: JSON.parse(localStorage.getItem('xm-user') || '{}'),
+  noticeData: [],
+  top: []
 })
 
 const logout = () => {
@@ -14,9 +17,28 @@ const logout = () => {
 const updateUser = () => {
   data.user = JSON.parse(localStorage.getItem('xm-user') || '{}')
 }
+
+const loadNotice = () => {
+  request.get('/notice/selectAll').then(res => {
+    data.noticeData = res.data
+    let i = 0
+    if (data.noticeData && data.noticeData.length) {
+      data.top = data.noticeData[0].content
+      setInterval(() => {
+        data.top = data.noticeData[i].content
+        i++
+        if (i === data.noticeData.length) {
+          i = 0
+        }
+      }, 2500)
+    }
+  })
+}
+loadNotice()
 </script>
 <template>
 <div>
+    <div class="front-notice"><el-icon><Bell /></el-icon>公告：{{ data.top }}</div>
     <div class="front-header">
       <div class="front-header-left">
         <img src="@/assets/imgs/logo.png" alt="">
@@ -26,6 +48,7 @@ const updateUser = () => {
         <el-menu :default-active="router.currentRoute.value.path" router mode="horizontal">
           <el-menu-item index="/front/home">首页</el-menu-item>
           <el-menu-item index="/front/person">个人中心</el-menu-item>
+          <el-menu-item index="/manager/home">后台首页</el-menu-item>
         </el-menu>
       </div>
       <div class="front-header-right">
@@ -53,6 +76,7 @@ const updateUser = () => {
     </div>
   </div>
 </template>
+
 <style scoped>
-@import "@/assets/css/front.css"
+@import "@/assets/css/front.css";
 </style>

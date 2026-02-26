@@ -22,6 +22,10 @@ const router = createRouter({
         {
           path: 'password', component: () => import('@/views/manager/Password.vue'),
           meta: { name: '修改密码' }
+        },
+        {
+          path: 'notice', component: () => import('@/views/manager/Notice.vue'),
+          meta: { name: '系统公告' }
         }
       ]
     },
