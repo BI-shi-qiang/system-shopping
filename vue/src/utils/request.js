@@ -9,8 +9,8 @@ const request = axios.create({
 
 request.interceptors.request.use(config => {
   config.headers['Content-Type'] = 'application/json;charset=utf-8';
-  // const user = JSON.parse(localStorage.getItem('xm-user') || '{}')
-  // config.headers['token'] = user.token || ''
+  let user = JSON.parse(localStorage.getItem('xm-user') || '{}') // 登录后 后端将token一同添加到用户信息中返回
+  config.headers['token'] = user.token || ''
   return config
 }, error => {
   return Promise.reject(error)
@@ -32,8 +32,9 @@ request.interceptors.response.use(response => {
       return Promise.reject(new Error('JSON 解析失败: ' + res))
     }
   }
-  if (res.code === 401) {
-    router.push("/login")
+  if (res.code === '401') {
+    ElMessage.error(res.msg)
+    router.push('/login')
   }
   return res;
 }, error => {

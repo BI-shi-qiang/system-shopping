@@ -4,6 +4,8 @@ import request from '@/utils/request'
 import { Edit, Delete } from '@element-plus/icons-vue'
 // import { ElMessage } from 'element-plus'
 
+const baseURL = import.meta.env.VITE_API_URL
+
 const data = reactive({
   formVisible: false,
   form: {},
@@ -108,6 +110,12 @@ const handleSelectionChange = (rows) => {
   console.log(data.ids)
 }
 
+// 上传文件
+const handleFileUpload = (res) => {
+  data.form.avatar = res.data
+}
+
+
 const save = () => {
   data.form.id ? update() : add()
 }
@@ -140,7 +148,12 @@ load()
       <el-table stripe :data="data.tableData" @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="55"></el-table-column>
         <el-table-column prop="username" label="账号"></el-table-column>
-        <el-table-column prop="avatar" label="头像"></el-table-column>
+        <el-table-column prop="avatar" label="头像">
+          <template v-slot="scope"><!--这个scope就是打包当前行-->
+            <el-image style="width: 40px; height: 40px; border-radius: 50%; display: block;" v-if="scope.row.avatar"
+            :src="scope.row.avatar" :preview-src-list="[scope.row.avatar]" preview-teleported></el-image>
+          </template>
+        </el-table-column>
         <el-table-column prop="name" label="姓名"></el-table-column>
         <el-table-column prop="role" label="角色"></el-table-column>
         <el-table-column prop="phone" label="电话"></el-table-column>
@@ -167,13 +180,22 @@ load()
       </el-pagination>
     </div>
 
+    <!--弹框-->
     <el-dialog title="管理员信息" v-model="data.formVisible" width="40%" destroy-on-close>
       <el-form ref="form" :model="data.form" label-width="70px" style="padding: 20px">
         <el-form-item prop="username" label="用户名">
           <el-input v-model="data.form.username" placeholder="请输入用户名"></el-input>
         </el-form-item>
         <el-form-item prop="avatar" label="头像">
-          <el-input v-model="data.form.avatar" placeholder="请输入头像"></el-input>
+          <!--action直接执行上传接口,返回的就是图片地址-->
+          <el-upload
+            :action="baseURL + '/files/upload'"
+            :on-success="handleFileUpload"
+            class="avatar-uploader"
+          >
+            <img v-if="data.form.avatar" :src="data.form.avatar" class="avatar" />
+            <el-icon v-else class="avatar-uploader-icon"><Plus /></el-icon>
+          </el-upload>
         </el-form-item>
         <el-form-item prop="name" label="姓名">
           <el-input v-model="data.form.name" placeholder="请输入姓名"></el-input>
@@ -196,4 +218,32 @@ load()
 </template>
 
 <style scoped lang="scss">
+.avatar-uploader {
+  height: 120px;
+}
+.avatar-uploader .avatar {
+  width: 120px;
+  height: 120px;
+  display: block;
+}
+.avatar-uploader .el-upload {
+  border: 1px dashed var(--el-border-color);
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: var(--el-transition-duration-fast);
+}
+
+.avatar-uploader .el-upload:hover {
+  border-color: var(--el-color-primary);
+}
+
+.el-icon.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 120px;
+  height: 120px;
+  text-align: center;
+}
 </style>

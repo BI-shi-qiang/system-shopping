@@ -40,6 +40,18 @@ public class AdminController {
         return Result.success();
     }
 
+    @GetMapping("/selectById/{id}")
+    public Result selectById(@PathVariable Integer id) {
+        Admin admin = adminService.selectById(id);
+        return Result.success(admin);
+    }
+
+    @GetMapping("/selectAll")
+    public Result selectAll(Admin admin) {
+        List<Admin> list = adminService.selectAll(admin);
+        return Result.success(list);
+    }
+
     @GetMapping("/selectPage")
     public Result selectPage(Admin admin,
                             @RequestParam(defaultValue = "1") Integer pageNum,

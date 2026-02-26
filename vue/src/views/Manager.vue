@@ -1,7 +1,24 @@
 <script setup>
 import router from "@/router/index.js"
+import { reactive } from "vue";
 // import home from "@/views/manager/home.vue"
 
+const data = reactive({
+  user: JSON.parse(localStorage.getItem('xm-user') || '{}')
+})
+const logout = () => {
+  localStorage.removeItem('xm-user')
+  router.push('/login')
+}
+
+const updateUser = () => {
+  data.user = JSON.parse(localStorage.getItem('xm-user') || '{}')
+}
+
+if (!data.user.id) {
+  logout()
+  ElMessage.error('请先登录')
+}
 </script>
 <template>
 <div class="manager-container">
@@ -19,14 +36,14 @@ import router from "@/router/index.js"
     <div class="manager-header-right">
       <el-dropdown style="cursor: pointer">
         <div style="padding-right: 20px; display: flex; align-items: center;border: 0cap;">
-          <img style="width: 40px; height: 40px; border-radius: 50%;" src="@/assets/imgs/head.jpg" alt=""/>
-          <span style="margin-left: 5px; color: white">管理员</span>
+          <img style="width: 40px; height: 40px; border-radius: 50%;" :src="data.user.avatar" alt=""/>
+          <span style="margin-left: 5px; color:white">{{ data.user.name }}</span><el-icon color="white"><arrow-down /></el-icon>
         </div>
         <template #dropdown>
           <el-dropdown-menu>
-            <el-dropdown-item>个人资料</el-dropdown-item>
-            <el-dropdown-item>修改密码</el-dropdown-item>
-            <el-dropdown-item>退出登录</el-dropdown-item>
+            <el-dropdown-item @click="router.push('/manager/person')">个人资料</el-dropdown-item>
+            <el-dropdown-item @click="router.push('/manager/password')">修改密码</el-dropdown-item>
+            <el-dropdown-item @click="logout">退出登录</el-dropdown-item>
           </el-dropdown-menu>
         </template>
       </el-dropdown>
@@ -61,7 +78,7 @@ import router from "@/router/index.js"
       </el-menu>
     </div>
     <div class="manager-main-right">
-      <RouterView />
+      <RouterView @updateUser="updateUser" />
     </div>
   </div>
 </div>

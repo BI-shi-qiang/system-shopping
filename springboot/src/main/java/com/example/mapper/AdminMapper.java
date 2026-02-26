@@ -9,6 +9,9 @@ public interface AdminMapper {
 
     int insert(Admin admin);
 
+    @Select("select * from `admin` where id = #{id}")
+    Admin selectById(Integer id);
+
     @Select("select * from `admin` where username = #{username}")
     Admin selectByUsername(String username);
 
@@ -17,4 +20,5 @@ public interface AdminMapper {
     void updateById(Admin admin);
 
     void deleteById(Integer id);
+
 }

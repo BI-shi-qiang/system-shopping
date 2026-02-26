@@ -14,6 +14,14 @@ const router = createRouter({
         {
           path: 'admin', component: () => import('@/views/manager/admin.vue'),
           meta: { name: '管理员信息' }
+        },
+        {
+          path: 'person', component: () => import('@/views/manager/Person.vue'),
+          meta: { name: '个人信息'}
+        },
+        {
+          path: 'password', component: () => import('@/views/manager/Password.vue'),
+          meta: { name: '修改密码' }
         }
       ]
     },
@@ -22,14 +30,18 @@ const router = createRouter({
       redirect: '/front/home',
       children: [
         {
-          path: '/front/home', component: () => import('@/views/front/home.vue'),
+          path: 'home', component: () => import('@/views/front/home.vue'),
           meta: { name: '首页' }
         },
+        {
+          path: 'person', component: () => import('@/views/front/Person.vue'),
+          meta: { name: '个人信息' }
+        }
       ]
     },
-    {
-      path: '/404', component: () => import('@/views/404.vue'),
-    },
+    { path: '/login', component: () => import('@/views/Login.vue') },
+    { path: '/register', component: () => import('@/views/Register.vue') },
+    { path: '/404', component: () => import('@/views/404.vue') },
     { path: '/:pathMatch(.*)*', redirect: '/404' },// 匹配所有路径，重定向到404页面
   ]
 })

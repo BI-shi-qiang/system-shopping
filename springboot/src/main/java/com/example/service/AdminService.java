@@ -4,9 +4,11 @@ import cn.hutool.core.util.ObjectUtil;
 import com.example.common.Constants;
 import com.example.common.enums.ResultCodeEnum;
 import com.example.common.enums.RoleEnum;
+import com.example.entity.Account;
 import com.example.entity.Admin;
 import com.example.exception.CustomException;
 import com.example.mapper.AdminMapper;
+import com.example.utils.TokenUtils;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import jakarta.annotation.Resource;
@@ -36,6 +38,14 @@ public class AdminService {
         adminMapper.insert(admin);
     }
 
+    public Admin selectById(Integer id) {
+        return adminMapper.selectById(id);
+    }
+
+    public List<Admin> selectAll(Admin admin) {
+        return adminMapper.selectAll(admin);
+    }
+
     public PageInfo<Admin> selectPage(Admin admin, Integer pageNum, Integer pageSize) {
         PageHelper.startPage(pageNum, pageSize);
         List<Admin> list = adminMapper.selectAll(admin);
@@ -54,5 +64,31 @@ public class AdminService {
         for (Integer id : ids) {
             adminMapper.deleteById(id);
         }
+    }
+
+    public Admin login(Account account) {
+        Admin dbAdmin = adminMapper.selectByUsername(account.getUsername());
+        if (ObjectUtil.isNull(dbAdmin)) {
+            throw new CustomException(ResultCodeEnum.USER_NOT_EXIST_ERROR);
+        }
+        if (!dbAdmin.getPassword().equals(account.getPassword())) {
+            throw new CustomException(ResultCodeEnum.USER_ACCOUNT_ERROR);
+        }
+        // 生成token
+        String token = TokenUtils.createToken(dbAdmin.getId() + "-" + dbAdmin.getRole(), dbAdmin.getPassword());
+        dbAdmin.setToken(token);
+        return dbAdmin;
+    }
+
+    public void updatePassword(Account account) {
+        Admin dbAdmin = adminMapper.selectByUsername(account.getUsername());
+        if (ObjectUtil.isNull(dbAdmin)) {
+            throw new CustomException(ResultCodeEnum.USER_NOT_EXIST_ERROR);
+        }
+        if (!account.getPassword().equals(dbAdmin.getPassword())) {
+            throw new CustomException(ResultCodeEnum.PARAM_PASSWORD_ERROR);
+        }
+        dbAdmin.setPassword(account.getNewPassword());
+        adminMapper.updateById(dbAdmin);
     }
 }
