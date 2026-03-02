@@ -151,7 +151,7 @@ load()
         <el-table-column prop="avatar" label="头像">
           <template v-slot="scope"><!--这个scope就是打包当前行-->
             <el-image style="width: 40px; height: 40px; border-radius: 50%; display: block;" v-if="scope.row.avatar"
-            :src="scope.row.avatar" :preview-src-list="[scope.row.avatar]" preview-teleported></el-image>
+            :src="baseURL + scope.row.avatar" :preview-src-list="[scope.row.avatar]" preview-teleported></el-image>
           </template>
         </el-table-column>
         <el-table-column prop="name" label="姓名"></el-table-column>
@@ -193,7 +193,7 @@ load()
             :on-success="handleFileUpload"
             class="avatar-uploader"
           >
-            <img v-if="data.form.avatar" :src="data.form.avatar" class="avatar" />
+            <img v-if="data.form.avatar" :src="baseURL + data.form.avatar" class="avatar" />
             <el-icon v-else class="avatar-uploader-icon"><Plus /></el-icon>
           </el-upload>
         </el-form-item>

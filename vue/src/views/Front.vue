@@ -3,6 +3,8 @@ import router from '@/router';
 import { reactive } from "vue";
 import request from '@/utils/request'
 
+const baseURL = import.meta.env.VITE_API_URL
+
 const data = reactive({
   user: JSON.parse(localStorage.getItem('xm-user') || '{}'),
   noticeData: [],
@@ -59,7 +61,7 @@ loadNotice()
         <div v-else>
           <el-dropdown style="cursor: pointer; height: 60px">
             <div style="display: flex; align-items: center">
-              <img style="width: 40px; height: 40px; border-radius: 50%;" :src="data.user.avatar" alt="">
+              <img style="width: 40px; height: 40px; border-radius: 50%;" :src="baseURL + data.user.avatar" alt="">
               <span style="margin-left: 5px;">{{ data.user.name }}</span><el-icon><arrow-down /></el-icon>
             </div>
             <template #dropdown>

@@ -39,7 +39,7 @@ const update = () => {
             class="avatar-uploader"
             show-file-list="false"
         >
-          <img v-if="data.user.avatar" :src="data.user.avatar" class="avatar" />
+          <img v-if="data.user.avatar" :src="baseURL + data.user.avatar" class="avatar" />
           <el-icon v-else class="avatar-uploader-icon"><Plus /></el-icon>
         </el-upload>
       </el-form-item>

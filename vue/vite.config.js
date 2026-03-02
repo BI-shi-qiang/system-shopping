@@ -16,6 +16,17 @@ export default defineConfig({
     AutoImport({ resolvers: [ ElementPlusResolver( { importStyle: 'sass' }) ] }),
     Components({ resolvers: [ ElementPlusResolver( { importStyle: 'sass' }) ] }),
   ],
+
+// 代理配置
+  server: {
+    proxy: {
+      '/api': {
+        target: 'http://localhost:9090',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, '')
+      }
+    }
+  },
 // 预加载项目必需的组件
   optimizeDeps: {
     include: [

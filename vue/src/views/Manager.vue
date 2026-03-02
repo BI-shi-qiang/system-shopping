@@ -2,6 +2,7 @@
 import router from "@/router/index.js"
 import { reactive } from "vue";
 // import home from "@/views/manager/home.vue"
+const baseURL = import.meta.env.VITE_API_URL
 
 const data = reactive({
   user: JSON.parse(localStorage.getItem('xm-user') || '{}')
@@ -36,7 +37,7 @@ if (!data.user.id) {
     <div class="manager-header-right">
       <el-dropdown style="cursor: pointer">
         <div style="padding-right: 20px; display: flex; align-items: center;border: 0cap;">
-          <img style="width: 40px; height: 40px; border-radius: 50%;" :src="data.user.avatar" alt=""/>
+          <img style="width: 40px; height: 40px; border-radius: 50%;" :src="baseURL + data.user.avatar" alt=""/>
           <span style="margin-left: 5px; color:white">{{ data.user.name }}</span><el-icon color="white"><arrow-down /></el-icon>
         </div>
         <template #dropdown>

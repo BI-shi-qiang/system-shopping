@@ -42,7 +42,8 @@ public class FileController {
         } catch (Exception e) {
             log.error(fileName + "--文件上传失败", e);
         }
-        String url = fileBaseUrl + "/files/download/" + fileName; //文件访问路径
+        // String url = fileBaseUrl + "/files/download/" + fileName; //文件访问路径
+        String url = "/files/download/" + fileName;
         return Result.success(url);
     }
 
